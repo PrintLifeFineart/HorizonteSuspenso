@@ -60,8 +60,7 @@
       word-break: break-word;
       overflow-wrap: break-word;
     }
-    #download-link {
-      margin-top: 20px;
+    .hidden-link {
       display: inline-block;
       background-color: #ffc400;
       color: #000;
@@ -70,9 +69,9 @@
       border-radius: 8px;
       text-decoration: none;
       text-align: center;
-      cursor: pointer;
+      margin-top: 20px;
     }
-    #download-link:hover {
+    .hidden-link:hover {
       background-color: #e6b800;
     }
   </style>
@@ -85,10 +84,8 @@
     <img src="printlife-nft/nft_horizonte.jpg" alt="Horizonte Suspenso #001" class="nft-preview">
     <h1>Horizonte Suspenso #001</h1>
 
-    <!-- Botão visível, mas funcional apenas se o usuário tiver a NFT -->
-    <div style="text-align: center;">
-      <a id="download-link" onclick="verificarENaHoraBaixar(event)">⬇️ Baixar Arquivo Original (.tif)</a>
-    </div>
+    <!-- Container do botão, será preenchido dinamicamente -->
+    <div id="download-container" style="text-align: center;"></div>
 
     <section class="info">
       <p><b>Rede Utilizada:</b> Polygon (MATIC)</p>
@@ -116,9 +113,7 @@
 
   <!-- Script -->
   <script>
-    async function verificarENaHoraBaixar(event) {
-      event.preventDefault();
-
+    window.addEventListener('DOMContentLoaded', async () => {
       try {
         if (typeof window.ethereum === 'undefined') {
           alert("MetaMask não detectado!");
@@ -142,18 +137,23 @@
         const balance = await contract.balanceOf(userAddress, tokenId);
 
         if (balance > 0) {
-          // Cria e aciona link dinamicamente
-          // Redireciona o usuário para o link da imagem ou página exclusiva
-        window.open("https://printlifefineart.github.io/HorizonteSuspenso/arquivo-protegido.html", "_blank");
+          const link = document.createElement('a');
+          link.href = "https://printlifefineart.github.io/HorizonteSuspenso/arquivo-protegido.html";
+          link.textContent = "🔓 Acessar Arquivo Original (.tif)";
+          link.className = "hidden-link";
+          link.target = "_blank";
 
+          const container = document.getElementById("download-container");
+          container.appendChild(link);
         } else {
           alert("Você não possui esta NFT na carteira conectada.");
         }
+
       } catch (err) {
         console.error("Erro na verificação da NFT:", err);
         alert("Erro ao verificar NFT. Tente novamente.");
       }
-    }
+    });
   </script>
 </body>
 </html>
