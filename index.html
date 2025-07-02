@@ -87,7 +87,7 @@
 
     <!-- Botão de download protegido -->
     <div style="text-align: center;">
-      <a id="download-link" href="printlife-nft/HorizonteSuspenso001_Original.tif" download>⬇️ Baixar Obra Original</a>
+      <a id="download-link" style="display:none;" download>⬇️ Baixar Arquivo Original (.tif)</a>
     </div>
 
     <section class="info">
@@ -145,5 +145,45 @@
       }
     });
   </script>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.8.1/dist/ethers.umd.min.js"></script>
+<script>
+  window.addEventListener('DOMContentLoaded', async () => {
+    if (typeof window.ethereum === 'undefined') {
+      alert("MetaMask não detectado!");
+      return;
+    }
+
+    try {
+      await window.ethereum.request({ method: 'eth_requestAccounts' });
+
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await provider.getSigner();
+      const userAddress = await signer.getAddress();
+
+      const contractAddress = "0x45AbB20E622C2Db8902B2BF82e42baDbDE02cAD4";
+      const tokenId = 1;
+
+      const abi = [
+        "function balanceOf(address account, uint256 id) view returns (uint256)"
+      ];
+
+      const contract = new ethers.Contract(contractAddress, abi, provider);
+      const balance = await contract.balanceOf(userAddress, tokenId);
+
+      if (balance > 0) {
+        const downloadLink = document.getElementById("download-link");
+
+        // ⚠️ Altere este link para o nome real do arquivo dentro da sua pasta
+        downloadLink.href = "printlife-nft/arquivos/5de1f3c8e4e68e92a4e41bd8f2d417cd_horizonte.tif";
+        downloadLink.style.display = "inline-block";
+      } else {
+        alert("Você não possui esta NFT na carteira conectada.");
+      }
+    } catch (err) {
+      console.error("Erro ao verificar NFT:", err);
+      alert("Erro ao conectar com a carteira.");
+    }
+  });
+</script>
 </body>
 </html>
