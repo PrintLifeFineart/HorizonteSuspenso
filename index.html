@@ -120,7 +120,10 @@
         alert("MetaMask não detectado!");
         return;
       }
-
+        else
+      {
+          alert("Seja muito bem vindo caro proprietário!");
+        }
       await window.ethereum.request({ method: 'eth_requestAccounts' });
 
       const provider = new ethers.BrowserProvider(window.ethereum);
