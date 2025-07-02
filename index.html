@@ -143,13 +143,9 @@
 
         if (balance > 0) {
           // Cria e aciona link dinamicamente
-          const hiddenLink = document.createElement('a');
-          hiddenLink.href = "printlife-nft/5de1f3c8e4e68e92a4e41bd8f2d417cd_horizonte.tif";
-          hiddenLink.download = "HorizonteSuspenso001.tif";
-          hiddenLink.style.display = "none";
-          document.body.appendChild(hiddenLink);
-          hiddenLink.click();
-          document.body.removeChild(hiddenLink);
+          // Redireciona o usuário para o link da imagem ou página exclusiva
+        window.open("https://printlifefineart.github.io/HorizonteSuspenso/arquivo-protegido.html", "_blank");
+
         } else {
           alert("Você não possui esta NFT na carteira conectada.");
         }
