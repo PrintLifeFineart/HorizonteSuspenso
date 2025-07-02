@@ -142,21 +142,12 @@
         const balance = await contract.balanceOf(userAddress, tokenId);
         
         if (balance > 0) {
-  const container = document.getElementById("download-container");
-
-  container.innerHTML = `
-    <a id="download-link" href="https://drive.google.com/drive/u/4/folders/1BrS0em7zv7uXsJzbiCsggyk8B5JU2Ye"
-       target="_blank"
-       style="margin-top: 20px; display: inline-block; background-color: #ffc400;
-              color: #000; font-weight: bold; padding: 12px 24px; border-radius: 8px;
-              text-decoration: none; text-align: center; cursor: pointer;">
-      ⬇️ Acessar Obra Original (.tif)
-    </a>
-    <section class="info">
-      <p>Para acessar esta página pelo celular, abra o site através do navegador interno da sua carteira MetaMask.</p>
-      <p><a href="https://metamask.io/download" target="_blank"><b>Link para o download da carteira Metamask.</b></a></p>
-    </section>
-  `;
+  const link = document.createElement("a");
+  link.href = "https://drive.google.com/drive/u/4/folders/1BrS0em7zv7uXsjZbizCsggyk8B5JU2Ye";
+  link.target = "_blank";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 } else {
   alert("Você não possui esta NFT na carteira conectada.");
 }
