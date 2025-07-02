@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.8.1/dist/ethers.umd.min.js"></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Horizonte Suspenso #001 - PrintLife</title>
@@ -60,7 +61,6 @@
       overflow-wrap: break-word;
     }
     #download-link {
-      display: none;
       margin-top: 20px;
       display: inline-block;
       background-color: #ffc400;
@@ -70,6 +70,7 @@
       border-radius: 8px;
       text-decoration: none;
       text-align: center;
+      cursor: pointer;
     }
     #download-link:hover {
       background-color: #e6b800;
@@ -84,9 +85,9 @@
     <img src="printlife-nft/nft_horizonte.jpg" alt="Horizonte Suspenso #001" class="nft-preview">
     <h1>Horizonte Suspenso #001</h1>
 
-    <!-- Botão de download protegido -->
+    <!-- Botão visível, mas funcional apenas se o usuário tiver a NFT -->
     <div style="text-align: center;">
-      <a id="download-link" style="display:none;" download>⬇️ Baixar Arquivo Original (.tif)</a>
+      <a id="download-link" onclick="verificarENaHoraBaixar(event)">⬇️ Baixar Arquivo Original (.tif)</a>
     </div>
 
     <section class="info">
@@ -113,79 +114,50 @@
     &copy; 2025 PrintLife Fineart - Todos os direitos reservados
   </footer>
 
-  <!-- Script para verificar NFT e liberar download -->
+  <!-- Script -->
   <script>
-    window.addEventListener('DOMContentLoaded', async () => {
-      if (typeof window.ethereum === 'undefined') {
-        alert("MetaMask não detectado!");
-        return;
+    async function verificarENaHoraBaixar(event) {
+      event.preventDefault();
+
+      try {
+        if (typeof window.ethereum === 'undefined') {
+          alert("MetaMask não detectado!");
+          return;
+        }
+
+        await window.ethereum.request({ method: 'eth_requestAccounts' });
+
+        const provider = new ethers.BrowserProvider(window.ethereum);
+        const signer = await provider.getSigner();
+        const userAddress = await signer.getAddress();
+
+        const contractAddress = "0x45AbB20E622C2Db8902B2BF82e42baDbDE02cAD4";
+        const tokenId = 1;
+
+        const abi = [
+          "function balanceOf(address account, uint256 id) view returns (uint256)"
+        ];
+
+        const contract = new ethers.Contract(contractAddress, abi, provider);
+        const balance = await contract.balanceOf(userAddress, tokenId);
+
+        if (balance > 0) {
+          // Cria e aciona link dinamicamente
+          const hiddenLink = document.createElement('a');
+          hiddenLink.href = "printlife-nft/HorizonteSuspenso001.tif";
+          hiddenLink.download = "HorizonteSuspenso001.tif";
+          hiddenLink.style.display = "none";
+          document.body.appendChild(hiddenLink);
+          hiddenLink.click();
+          document.body.removeChild(hiddenLink);
+        } else {
+          alert("Você não possui esta NFT na carteira conectada.");
+        }
+      } catch (err) {
+        console.error("Erro na verificação da NFT:", err);
+        alert("Erro ao verificar NFT. Tente novamente.");
       }
-      await window.ethereum.request({ method: 'eth_requestAccounts' });
-
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = await provider.getSigner();
-      const userAddress = await signer.getAddress();
-
-      const contractAddress = "0x45AbB20E622C2Db8902B2BF82e42baDbDE02cAD4";
-      const tokenId = 1;
-
-      const abi = [
-        "function balanceOf(address account, uint256 id) view returns (uint256)"
-      ];
-
-      const contract = new ethers.Contract(contractAddress, abi, provider);
-      const balance = await contract.balanceOf(userAddress, tokenId);
-
-      if (balance > 0) {
-        alert("Seja muito bem vindo caro proprietário!");
-        document.getElementById("download-link").style.display = "inline-block";
-      } else {
-        alert("Você não possui esta NFT na carteira conectada.");
-      }
-    });
+    }
   </script>
-  <script src="https://cdn.jsdelivr.net/npm/ethers@6.8.1/dist/ethers.umd.min.js"></script>
-<script>
-  window.addEventListener('DOMContentLoaded', async () => {
-    if (typeof window.ethereum === 'undefined') {
-      alert("MetaMask não detectado!");
-      return;
-    }
-
-    try {
-      await window.ethereum.request({ method: 'eth_requestAccounts' });
-
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = await provider.getSigner();
-      const userAddress = await signer.getAddress();
-
-      const contractAddress = "0x45AbB20E622C2Db8902B2BF82e42baDbDE02cAD4";
-      const tokenId = 1;
-
-      const abi = [
-        "function balanceOf(address account, uint256 id) view returns (uint256)"
-      ];
-
-      const contract = new ethers.Contract(contractAddress, abi, provider);
-      const balance = await contract.balanceOf(userAddress, tokenId);
-
-      // ✅ CORRETA COMPARAÇÃO COM BigInt
-      if (balance && balance > 0n) {
-        const downloadLink = document.getElementById("download-link");
-
-        // ✅ Link "maquiado"
-        downloadLink.href = "printlife-nft/arquivos/5de1f3c8e4e68e92a4e41bd8f2d417cd_horizonte.tif";
-        downloadLink.style.display = "inline-block";
-      } else {
-        alert("Você não possui esta NFT na carteira conectada.");
-      }
-
-    } catch (err) {
-      console.error("Erro ao verificar NFT:", err);
-      alert("Erro ao conectar com a carteira.");
-    }
-  });
-</script>
-
 </body>
 </html>
