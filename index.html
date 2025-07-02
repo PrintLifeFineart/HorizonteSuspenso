@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <script src="https://cdn.jsdelivr.net/npm/ethers@6.8.1/dist/ethers.umd.min.js"></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Horizonte Suspenso #001 - PrintLife</title>
@@ -170,20 +169,23 @@
       const contract = new ethers.Contract(contractAddress, abi, provider);
       const balance = await contract.balanceOf(userAddress, tokenId);
 
-      if (balance > 0) {
+      // ✅ CORRETA COMPARAÇÃO COM BigInt
+      if (balance && balance > 0n) {
         const downloadLink = document.getElementById("download-link");
 
-        // ⚠️ Altere este link para o nome real do arquivo dentro da sua pasta
-        downloadLink.href = "printlife-nft/5de1f3c8e4e68e92a4e41bd8f2d417cd_horizonte.tif";
+        // ✅ Link "maquiado"
+        downloadLink.href = "printlife-nft/arquivos/5de1f3c8e4e68e92a4e41bd8f2d417cd_horizonte.tif";
         downloadLink.style.display = "inline-block";
       } else {
         alert("Você não possui esta NFT na carteira conectada.");
       }
+
     } catch (err) {
       console.error("Erro ao verificar NFT:", err);
       alert("Erro ao conectar com a carteira.");
     }
   });
 </script>
+
 </body>
 </html>
