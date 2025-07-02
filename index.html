@@ -142,12 +142,16 @@
         const balance = await contract.balanceOf(userAddress, tokenId);
         
         if (balance > 0) {
-  const link = document.createElement("a");
-  link.href = "https://drive.google.com/drive/u/4/folders/1BrS0em7zv7uXsjZbizCsggyk8B5JU2Ye";
-  link.target = "_blank";
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
+  const container = document.getElementById("download-container");
+
+container.innerHTML = `
+  <a href="https://drive.google.com/drive/u/4/folders/1BrS0em7zv7uXsjZbizCsggyk8B5JU2Ye" 
+     target="_blank" 
+     class="hidden-link">
+    ⬇️ Acessar Obra Original (.tif)
+  </a>
+`;
+
 } else {
   alert("Você não possui esta NFT na carteira conectada.");
 }
