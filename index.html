@@ -120,10 +120,6 @@
         alert("MetaMask não detectado!");
         return;
       }
-        else
-      {
-          alert("Seja muito bem vindo caro proprietário!");
-        }
       await window.ethereum.request({ method: 'eth_requestAccounts' });
 
       const provider = new ethers.BrowserProvider(window.ethereum);
@@ -141,6 +137,7 @@
       const balance = await contract.balanceOf(userAddress, tokenId);
 
       if (balance > 0) {
+        alert("Seja muito bem vindo caro proprietário!");
         document.getElementById("download-link").style.display = "inline-block";
       } else {
         alert("Você não possui esta NFT na carteira conectada.");
