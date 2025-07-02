@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.8.1/dist/ethers.umd.min.js"></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Horizonte Suspenso #001 - PrintLife</title>
@@ -56,9 +57,24 @@
       color: #888;
     }
     .info p {
-    word-break: break-word;
-    overflow-wrap: break-word;
-  }
+      word-break: break-word;
+      overflow-wrap: break-word;
+    }
+    #download-link {
+      display: none;
+      margin-top: 20px;
+      display: inline-block;
+      background-color: #ffc400;
+      color: #000;
+      font-weight: bold;
+      padding: 12px 24px;
+      border-radius: 8px;
+      text-decoration: none;
+      text-align: center;
+    }
+    #download-link:hover {
+      background-color: #e6b800;
+    }
   </style>
 </head>
 <body>
@@ -69,11 +85,16 @@
     <img src="printlife-nft/nft_horizonte.jpg" alt="Horizonte Suspenso #001" class="nft-preview">
     <h1>Horizonte Suspenso #001</h1>
 
+    <!-- Botão de download protegido -->
+    <div style="text-align: center;">
+      <a id="download-link" href="printlife-nft/HorizonteSuspenso001_Original.tif" download>⬇️ Baixar Obra Original</a>
+    </div>
+
     <section class="info">
       <p><b>Rede Utilizada:</b> Polygon (MATIC)</p>
       <p><b>Endereço do Contrato:</b>
-  <span class="long-text">0x45AbB20E622C2Db8902B2BF82e42baDbDE02cAD4</span>
-</p>
+        <span class="long-text">0x45AbB20E622C2Db8902B2BF82e42baDbDE02cAD4</span>
+      </p>
       <p><b>Padrão do Token:</b> ERC-1155</p>
       <p><b>Coleção:</b> PrintLife</p>
       <p><b>Autor:</b> Paulo Machado</p>
@@ -92,5 +113,37 @@
   <footer>
     &copy; 2025 PrintLife Fineart - Todos os direitos reservados
   </footer>
+
+  <!-- Script para verificar NFT e liberar download -->
+  <script>
+    window.addEventListener('DOMContentLoaded', async () => {
+      if (typeof window.ethereum === 'undefined') {
+        alert("MetaMask não detectado!");
+        return;
+      }
+
+      await window.ethereum.request({ method: 'eth_requestAccounts' });
+
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await provider.getSigner();
+      const userAddress = await signer.getAddress();
+
+      const contractAddress = "0x45AbB20E622C2Db8902B2BF82e42baDbDE02cAD4";
+      const tokenId = 1;
+
+      const abi = [
+        "function balanceOf(address account, uint256 id) view returns (uint256)"
+      ];
+
+      const contract = new ethers.Contract(contractAddress, abi, provider);
+      const balance = await contract.balanceOf(userAddress, tokenId);
+
+      if (balance > 0) {
+        document.getElementById("download-link").style.display = "inline-block";
+      } else {
+        alert("Você não possui esta NFT na carteira conectada.");
+      }
+    });
+  </script>
 </body>
 </html>
